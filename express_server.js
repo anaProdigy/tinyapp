@@ -31,14 +31,18 @@ app.get("/", (req, res) => {
 //Why in an object?????
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase }; //send variables inside an object
-  //console.log(templateVars);
+  console.log(templateVars);
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  let newShortId = generateRandomString();
+  //console.log(newShortId)
+  urlDatabase[newShortId] = req.body.longURL;
+  //console.log(req.body); // Log the POST request body to the console
+  res.redirect(`/urls/${newShortId}`); 
 });
+//console.log(urlDatabase)
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
@@ -47,6 +51,11 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars); // 2nd
+});
+
+app.get("/u/:id", (req, res) => {
+  // const longURL = ...
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
