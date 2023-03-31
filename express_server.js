@@ -13,6 +13,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+//Why in an object?????
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase }; //send variables inside an object
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
@@ -24,9 +25,7 @@ app.get("/urls.json", (req, res) => {
 
 
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+
 
 
 app.listen(PORT, () => {
