@@ -17,9 +17,7 @@
     <title>TinyApp</title>
   </head>
   <body>
-    <main style="margin: 1em;">
-      <!--A link for shortening a new URL -->
-       <a href="#">Shorten a new URL</a>
+    <main style="margin: 1em">
       <h3>My URLs</h3>
       <table class="table">
         <thead>
@@ -28,13 +26,13 @@
             <th scope="col">Long URL</th>
           </tr>
         </thead>
-         <!--Why URLS??? a table of the URLs and their shortened forms -->
+        <!--Why URLS??? a table of the URLs and their shortened forms -->
         <tbody>
           <% for (let id in urls) { %>
-            <tr>
-              <td><%= id %></td>
-              <td><%= urls[id] %></td>
-            </tr>
+          <tr>
+            <td><a href="#"><%= id %></a></td>
+            <td><%= urls[id] %></td>
+          </tr>
           <% } %>
         </tbody>
       </table>
