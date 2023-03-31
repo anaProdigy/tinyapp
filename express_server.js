@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  res.render("urls_index", templateVars);
+  const templateVars = { urls: urlDatabase }; //send variables inside an object
+  res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
 
 app.get("/urls.json", (req, res) => {
