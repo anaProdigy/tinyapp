@@ -72,11 +72,3 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-/*
-Design backend instagram
- /posts/:id => customer /post/
- 
- /followers/:id
- /following
- /reels
-*/
