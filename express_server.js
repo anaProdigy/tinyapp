@@ -40,7 +40,7 @@ app.post("/urls", (req, res) => {
   //console.log(newShortId)
   urlDatabase[newShortId] = req.body.longURL;
   //console.log(req.body); // Log the POST request body to the console
-  res.redirect(`/urls/${newShortId}`); 
+  res.redirect(`/urls/${newShortId}`);
 });
 //console.log(urlDatabase)
 
@@ -53,8 +53,13 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars); // 2nd
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id]
+  const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
 
