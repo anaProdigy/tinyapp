@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"]
+    username: req.cookies["username"] //include username on every template
   }; //send variables inside an object
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
@@ -52,6 +52,12 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+//clears the username cookie and redirects the user back to the /urls page
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
+});
+
 app.get("/urls/new", (req, res) => {
   //include this var with username so it doesnt throw an error on this route
   const templateVars = {
@@ -64,7 +70,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies["username"]
+    username: req.cookies["username"] // include username on every template
   };
   res.render("urls_show", templateVars); // 2nd
 });
