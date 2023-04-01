@@ -30,8 +30,10 @@ app.get("/", (req, res) => {
 
 //Why in an object?????
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase }; //send variables inside an object
-  
+  const templateVars = { 
+    urls: urlDatabase,
+    username: req.cookies["username"]
+   }; //send variables inside an object
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
 
@@ -44,8 +46,7 @@ app.post("/urls", (req, res) => {
 });
 //console.log(urlDatabase)
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username)
-  //console.log(req.body.username)
+  res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
 
