@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 //Why in an object?????
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase }; //send variables inside an object
-  console.log(templateVars);
+  
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
 
@@ -43,6 +43,11 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newShortId}`);
 });
 //console.log(urlDatabase)
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username)
+  //console.log(req.body.username)
+  res.redirect("/urls");
+});
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
@@ -72,11 +77,3 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-/*
-Design backend instagram
- /posts/:id => customer /post/
- 
- /followers/:id
- /following
- /reels
-*/
