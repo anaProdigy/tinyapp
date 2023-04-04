@@ -15,6 +15,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+
 function generateRandomString() {
   let result = '';
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -53,7 +66,9 @@ app.post("/urls", (req, res) => {
   //console.log(req.body); // Log the POST request body to the console
   res.redirect(`/urls/${newShortId}`);
 });
-//console.log(urlDatabase)
+
+
+
 app.post("/login", (req, res) => {
   res.cookie("username", req.body.username);
   res.redirect("/urls");
@@ -62,6 +77,24 @@ app.post("/login", (req, res) => {
 //clears the username cookie and redirects the user back to the /urls page
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
+  res.redirect("/urls");
+});
+
+//Registration Handler
+app.post("/register", (req, res) => {
+  let userRandomId = generateRandomString();
+  const { email, password } = req.body;
+  // Add the user information to the `users` object using the randomly generated ID as the key
+  users[userRandomId] = { email, password };
+  //set a user_id cookie containing the user's newly generated ID
+  res.cookie("user_id", userRandomId);
+  res.redirect("/urls");
+});
+
+
+app.post("/register", (req, res) => {
+  res.cookie("userRandomId", userRandomId);
+  console.log(userRandomId)
   res.redirect("/urls");
 });
 
