@@ -39,6 +39,7 @@ function generateRandomString() {
   return result;
 }
 
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -46,7 +47,8 @@ app.get("/", (req, res) => {
 //Why in an object?????
 app.get("/register", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"] //include username on every template
+    user: users[req.cookies["user_id"]] 
+
   }; 
   res.render("register", templateVars); 
 });
@@ -54,7 +56,7 @@ app.get("/register", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"] //include username on every template
+    user: users[req.cookies["user_id"]]
   }; //send variables inside an object
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
@@ -92,16 +94,10 @@ app.post("/register", (req, res) => {
 });
 
 
-app.post("/register", (req, res) => {
-  res.cookie("userRandomId", userRandomId);
-  console.log(userRandomId)
-  res.redirect("/urls");
-});
-
 app.get("/urls/new", (req, res) => {
   //include this var with username so it doesnt throw an error on this route
   const templateVars = {
-    username: req.cookies["username"]
+    user: users[req.cookies["user_id"]] 
   };
   res.render("urls_new", templateVars );
 });
@@ -110,7 +106,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies["username"] // include username on every template
+    user: users[req.cookies["user_id"]]  // include username on every template
   };
   res.render("urls_show", templateVars); // 2nd
 });
