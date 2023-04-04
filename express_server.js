@@ -31,6 +31,13 @@ app.get("/", (req, res) => {
 });
 
 //Why in an object?????
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"] //include username on every template
+  }; 
+  res.render("register", templateVars); 
+});
+
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
