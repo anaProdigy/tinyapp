@@ -62,12 +62,12 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 //a GET /login endpoint that responds with a new login form template
-app.get ("/login", (req, res) => {
+app.get("/login", (req, res) => {
   const templateVars = {
     user: users[req.cookies["user_id"]]
   };
   res.render("login", templateVars);
-})
+});
 
 app.get("/urls", (req, res) => {
   const templateVars = {
@@ -88,7 +88,19 @@ app.post("/urls", (req, res) => {
 
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  const { email, password } = req.body;
+
+  const user = findUserByEmail(email, users);
+  //If a user with that e-mail cannot be found, return a response with a 403 status code.
+  if (!user) {
+    return res.status(403).send("Email not found");
+  }
+  //check if passward matches
+  if (user.password !== password) {
+    return res.status(403).send("Password is incorrect");
+  }
+ //set the user_id cookie with the matching user's random ID, then redirect to /urls.
+  res.cookie("user_id", user.id);
   res.redirect("/urls");
 });
 
