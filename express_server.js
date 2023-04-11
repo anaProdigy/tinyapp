@@ -39,6 +39,16 @@ function generateRandomString() {
   return result;
 }
 
+//Finding a user in the users object from its email
+function findUserByEmail(email, users) {
+  for (let user of users) {
+    if(user.email === email) {
+      return user;
+    }
+  }
+  return null;
+}
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
