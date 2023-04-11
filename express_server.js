@@ -6,7 +6,7 @@ const PORT = 8080; // default port 8080
 //translates, or parses the body from Buffer to human readable data;
 //The body-parser library will convert the request body from a Buffer into string that we can read. It will then add the data to the req(request) object under the key body.
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());; //to pass and remember username
+app.use(cookieParser());; //to pass and remember cookies
 app.set("view engine", "ejs");
 
 
@@ -104,7 +104,7 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-//clears the username cookie and redirects the user back to the /urls page
+//clears the user_id cookie and redirects the user back to the /login page
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
   res.redirect("/login");
@@ -131,7 +131,7 @@ app.post("/register", (req, res) => {
 
 
 app.get("/urls/new", (req, res) => {
-  //include this var with username so it doesnt throw an error on this route
+  //include this var with user_id so it doesnt throw an error on this route
   const templateVars = {
     user: users[req.cookies["user_id"]]
   };
@@ -142,7 +142,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    user: users[req.cookies["user_id"]]  // include username on every template
+    user: users[req.cookies["user_id"]]  // include user_id on every template
   };
   res.render("urls_show", templateVars); // 2nd
 });
