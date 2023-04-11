@@ -41,7 +41,7 @@ function generateRandomString() {
 
 //Finding a user in the users object from its email
 function findUserByEmail(email, users) {
-  for (let user of users) {
+  for (let user in users) {
     if (user.email === email) {
       return user;
     }
@@ -107,7 +107,7 @@ app.post("/login", (req, res) => {
 //clears the username cookie and redirects the user back to the /urls page
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 //Registration Handler
