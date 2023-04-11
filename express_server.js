@@ -42,8 +42,8 @@ function generateRandomString() {
 //Finding a user in the users object from its email
 function findUserByEmail(email, users) {
   for (let user in users) {
-    if (user.email === email) {
-      return user;
+    if (users[user].email === email) {
+      return users[user];
     }
   }
   return null;
@@ -116,14 +116,14 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body;
   // If email or password are empty strings, send a 400 Bad Request response
   if (!email || !password) {
-    return res.status(400);
+    return res.status(400).send("Fields cannot be empty");
   }
   // Check if email already exists in the users object
   if (findUserByEmail(email, users)) {
-    return res.status(400);
+    return res.status(400).send("This email is taken");
   }
   // Add the user information to the `users` object using the randomly generated ID as the key
-  users[userRandomId] = { email, password };
+  users[userRandomId] = { email, password, id: userRandomId };
   //set a user_id cookie containing the user's newly generated ID
   res.cookie("user_id", userRandomId);
   res.redirect("/urls");
