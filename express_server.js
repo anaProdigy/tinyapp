@@ -58,10 +58,16 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   const templateVars = {
     user: users[req.cookies["user_id"]]
-
   };
   res.render("register", templateVars);
 });
+//a GET /login endpoint that responds with a new login form template
+app.get ("/login", (req, res) => {
+  const templateVars = {
+    user: users[req.cookies["user_id"]]
+  };
+  res.render("login", templateVars);
+})
 
 app.get("/urls", (req, res) => {
   const templateVars = {
