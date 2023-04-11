@@ -42,7 +42,7 @@ function generateRandomString() {
 //Finding a user in the users object from its email
 function findUserByEmail(email, users) {
   for (let user of users) {
-    if(user.email === email) {
+    if (user.email === email) {
       return user;
     }
   }
@@ -57,10 +57,10 @@ app.get("/", (req, res) => {
 //Why in an object?????
 app.get("/register", (req, res) => {
   const templateVars = {
-    user: users[req.cookies["user_id"]] 
+    user: users[req.cookies["user_id"]]
 
-  }; 
-  res.render("register", templateVars); 
+  };
+  res.render("register", templateVars);
 });
 
 app.get("/urls", (req, res) => {
@@ -96,6 +96,14 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   let userRandomId = generateRandomString();
   const { email, password } = req.body;
+  // If email or password are empty strings, send a 400 Bad Request response
+  if (!email || !password) {
+    return res.status(400);
+  }
+  // Check if email already exists in the users object
+  if (findUserByEmail(email, users)) {
+    return res.status(400);
+  }
   // Add the user information to the `users` object using the randomly generated ID as the key
   users[userRandomId] = { email, password };
   //set a user_id cookie containing the user's newly generated ID
@@ -107,9 +115,9 @@ app.post("/register", (req, res) => {
 app.get("/urls/new", (req, res) => {
   //include this var with username so it doesnt throw an error on this route
   const templateVars = {
-    user: users[req.cookies["user_id"]] 
+    user: users[req.cookies["user_id"]]
   };
-  res.render("urls_new", templateVars );
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
