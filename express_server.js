@@ -115,7 +115,7 @@ app.get("/urls", (req, res) => {
     urls: userUrls,
     user: user
   }; //send variables inside an object
-  res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
+  res.render("urls_index", templateVars); //sending variables to an EJzS template urls_index
 });
 
 app.post("/urls", (req, res) => {
@@ -219,20 +219,18 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars); // 2nd
 });
 
-app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect("/urls");
-});
-
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = {
     longURL: req.body.longURL,
     userID: userId
   };
-  //urlDatabase[req.params.id] = req.body.longURL;
   res.redirect("/urls");
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
 //access short url
 app.get("/u/:id", (req, res) => {
   const url = urlDatabase[req.params.id];
