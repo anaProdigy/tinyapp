@@ -91,6 +91,13 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+
+  if(!user) {
+    res.status(401).send("You must be logged in to shorten your URL")
+  }
+  
   let newShortId = generateRandomString();
   //console.log(newShortId)
   urlDatabase[newShortId] = req.body.longURL;
