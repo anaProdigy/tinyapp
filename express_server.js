@@ -144,6 +144,12 @@ app.post("/register", (req, res) => {
 
 
 app.get("/urls/new", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+
+  if (!user) {
+    return res.redirect("/login");
+  }
   //include this var with user_id so it doesnt throw an error on this route
   const templateVars = {
     user: users[req.cookies["user_id"]]
