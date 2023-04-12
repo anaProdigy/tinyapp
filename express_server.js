@@ -191,7 +191,7 @@ app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
 
   if(!longURL) {
-    res.status(404).send("Short URL not found.")
+    return res.status(404).send("Short URL not found.")
   }
   res.redirect(longURL);
 });
