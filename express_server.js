@@ -60,6 +60,15 @@ function findUserByEmail(email, users) {
   return null;
 }
 
+function urlsForUser(id) {
+  userUrls = {};
+for(let shortUrl in urlDatabase) {
+  if (urlDatabase[shortUrl].userID === id) {
+    userUrls[shortUrl] = urlDatabase[shortUrl]
+  }
+}
+return userUrls;
+}
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -101,9 +110,10 @@ app.get("/urls", (req, res) => {
     return res.send("You should be logged in to see your urls");
   }
 
+  const userUrls = urlsForUser(userId)
   const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies["user_id"]]
+    urls: userUrls,
+    user: user
   }; //send variables inside an object
   res.render("urls_index", templateVars); //sending variables to an EJS template urls_index
 });
