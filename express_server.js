@@ -97,7 +97,7 @@ app.post("/urls", (req, res) => {
   if(!user) {
     res.status(401).send("You must be logged in to shorten your URL")
   }
-  
+
   let newShortId = generateRandomString();
   //console.log(newShortId)
   urlDatabase[newShortId] = req.body.longURL;
@@ -166,6 +166,8 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
+
+
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
@@ -184,8 +186,13 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+//access short url
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
+
+  if(!longURL) {
+    res.status(404).send("Short URL not found.")
+  }
   res.redirect(longURL);
 });
 
