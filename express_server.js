@@ -56,6 +56,13 @@ app.get("/", (req, res) => {
 
 //Why in an object?????
 app.get("/register", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+
+  if (user) {
+    return res.redirect("/urls");
+  }
+
   const templateVars = {
     user: users[req.cookies["user_id"]]
   };
@@ -63,8 +70,14 @@ app.get("/register", (req, res) => {
 });
 //a GET /login endpoint that responds with a new login form template
 app.get("/login", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+
+  if(user) {
+    return res.redirect("/urls")
+  }
   const templateVars = {
-    user: users[req.cookies["user_id"]]
+    user: false
   };
   res.render("login", templateVars);
 });
@@ -137,6 +150,7 @@ app.get("/urls/new", (req, res) => {
   };
   res.render("urls_new", templateVars);
 });
+
 
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
