@@ -10,9 +10,20 @@ app.use(cookieParser());; //to pass and remember cookies
 app.set("view engine", "ejs");
 
 
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
 
 const users = {
@@ -83,6 +94,13 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
+
+  if (!user) {
+    return res.send("You should be logged in to see your urls");
+  }
+
   const templateVars = {
     urls: urlDatabase,
     user: users[req.cookies["user_id"]]
@@ -99,9 +117,12 @@ app.post("/urls", (req, res) => {
   }
 
   let newShortId = generateRandomString();
-  //console.log(newShortId)
-  urlDatabase[newShortId] = req.body.longURL;
-  //console.log(req.body); // Log the POST request body to the console
+  
+  urlDatabase[newShortId] = {
+    longURL: req.body.longURL, 
+    userID: userId
+  }
+  
   res.redirect(`/urls/${newShortId}`);
 });
 
@@ -166,12 +187,14 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-
-
+  if(!urlDatabase[req.params.id]) {
+    return res.send("Url is not available")
+  }
   const templateVars = {
     id: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    longURL: urlDatabase[req.params.id].longURL,
     user: users[req.cookies["user_id"]]  // include user_id on every template
+
   };
   res.render("urls_show", templateVars); // 2nd
 });
@@ -182,18 +205,22 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id] = { 
+    longURL: req.body.longURL,
+    userID: userId
+  }
+  //urlDatabase[req.params.id] = req.body.longURL;
   res.redirect("/urls");
 });
 
 //access short url
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
+  const url = urlDatabase[req.params.id];
 
-  if(!longURL) {
+  if(!url) {
     return res.status(404).send("Short URL not found.")
   }
-  res.redirect(longURL);
+  res.redirect(url.longURL);
 });
 
 app.listen(PORT, () => {
