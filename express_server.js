@@ -3,7 +3,7 @@ const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 8080; // default port 8080
-const findUserByEmail = require('./helper');
+const findUserByEmail = require('./helpers');
 //translates, or parses the body from Buffer to human readable data;
 //The body-parser library will convert the request body from a Buffer into string that we can read. It will then add the data to the req(request) object under the key body.
 app.use(express.urlencoded({ extended: true }));
