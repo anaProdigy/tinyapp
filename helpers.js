@@ -5,7 +5,7 @@ const findUserByEmail = function (email, users) {
       return users[user];
     }
   }
-  return null;
+  return undefined;
 }
 
 
