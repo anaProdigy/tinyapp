@@ -2,10 +2,10 @@ const express = require("express");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const findUserByEmail = require('./helpers');
-//translates, or parses the body from Buffer to human readable data;
-//The body-parser library will convert the request body from a Buffer into string that we can read. It will then add the data to the req(request) object under the key body.
+
+//middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
@@ -13,7 +13,7 @@ app.use(cookieSession({
 }));
 app.set("view engine", "ejs");
 
-
+//data
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -38,7 +38,9 @@ const users = {
   },
 };
 
-function generateRandomString() {
+
+//functions
+const generateRandomString = function() {
   let result = '';
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charsLength = chars.length;
@@ -47,10 +49,9 @@ function generateRandomString() {
     result += chars.charAt(Math.floor(Math.random() * charsLength));
   }
   return result;
-}
+};
 
-
-function urlsForUser(id) {
+const urlsForUser = function(id) {
   userUrls = {};
   for (let shortUrl in urlDatabase) {
     if (urlDatabase[shortUrl].userID === id) {
@@ -58,15 +59,15 @@ function urlsForUser(id) {
     }
   }
   return userUrls;
-}
+};
 
+//ROUTES
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-//Why in an object?????
 app.get("/register", (req, res) => {
-  const userId = req.session.user_id;//???????????????
+  const userId = req.session.user_id;
   const user = users[userId];
 
   if (user) {
@@ -78,6 +79,7 @@ app.get("/register", (req, res) => {
   };
   res.render("register", templateVars);
 });
+
 //a GET /login endpoint that responds with a new login form template
 app.get("/login", (req, res) => {
   const userId = req.session.user_id;
@@ -104,8 +106,8 @@ app.get("/urls", (req, res) => {
   const templateVars = {
     urls: userUrls,
     user: user
-  }; //send variables inside an object
-  res.render("urls_index", templateVars); //sending variables to an EJzS template urls_index
+  }; 
+  res.render("urls_index", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -132,7 +134,7 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   const user = findUserByEmail(email, users);
-  //If a user with that e-mail cannot be found, return a response with a 403 status code.
+  //check if a user with that e-mail cannot be found
   if (!user) {
     return res.status(403).send("Email not found");
   }
@@ -140,7 +142,7 @@ app.post("/login", (req, res) => {
   if (!bcrypt.compareSync(password, user.hashedPassword)) {
     return res.status(403).send("Password is incorrect");
   }
-  //set the user_id session with the matching user's random ID, then redirect to /urls.
+  //set the user_id session with the matching user's random ID
   req.session.user_id = user.id;
   res.redirect("/urls");
 });
@@ -157,7 +159,7 @@ app.post("/register", (req, res) => {
   let userRandomId = generateRandomString();
   const { email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
-  // If email or password are empty strings, send a 400 Bad Request response
+  // check if email or password are empty strings
   if (!email || !hashedPassword) {
     return res.status(400).send("Fields cannot be empty");
   }
@@ -200,15 +202,15 @@ app.get("/urls/:id", (req, res) => {
     return res.send("Url is not available");
   }
 
-  if(url.userID !== userId) {
-    return res.send("You don`t have permission to view this URL")
+  if (url.userID !== userId) {
+    return res.send("You don`t have permission to view this URL");
   }
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
-    user: users[req.session["user_id"]]  // include user_id on every template
+    user: users[req.session["user_id"]]  
   };
-  res.render("urls_show", templateVars); // 2nd
+  res.render("urls_show", templateVars); 
 });
 
 app.post("/urls/:id", (req, res) => {
@@ -259,6 +261,7 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[urlId];
   res.redirect("/urls");
 });
+
 //access short url
 app.get("/u/:id", (req, res) => {
   const url = urlDatabase[req.params.id];
