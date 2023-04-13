@@ -1,5 +1,5 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -7,14 +7,12 @@ const PORT = 8080; // default port 8080
 //translates, or parses the body from Buffer to human readable data;
 //The body-parser library will convert the request body from a Buffer into string that we can read. It will then add the data to the req(request) object under the key body.
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());; //to pass and remember cookies
+app.use(cookieSession({
+  name: 'session',
+  keys: ["one", "two"]
+}));
 app.set("view engine", "ejs");
 
-
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
 
 const urlDatabase = {
   b6UTxQ: {
@@ -77,7 +75,7 @@ app.get("/", (req, res) => {
 
 //Why in an object?????
 app.get("/register", (req, res) => {
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;//???????????????
   const user = users[userId];
 
   if (user) {
@@ -85,13 +83,13 @@ app.get("/register", (req, res) => {
   }
 
   const templateVars = {
-    user: users[req.cookies["user_id"]]
+    user: users[req.session["user_id"]]
   };
   res.render("register", templateVars);
 });
 //a GET /login endpoint that responds with a new login form template
 app.get("/login", (req, res) => {
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   const user = users[userId];
 
   if (user) {
@@ -104,7 +102,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   const user = users[userId];
 
   if (!user) {
@@ -120,7 +118,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   const user = users[userId];
 
   if (!user) {
@@ -151,14 +149,15 @@ app.post("/login", (req, res) => {
   if (!bcrypt.compareSync(password, user.hashedPassword)) {
     return res.status(403).send("Password is incorrect");
   }
-  //set the user_id cookie with the matching user's random ID, then redirect to /urls.
-  res.cookie("user_id", user.id);
+  //set the user_id session with the matching user's random ID, then redirect to /urls.
+  req.session.user_id = user.id;
   res.redirect("/urls");
 });
 
-//clears the user_id cookie and redirects the user back to the /login page
+//clears the user_id session and redirects the user back to the /login page
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session.user_id = null;
+  //res.clearCookie("user_id");?????????????????????
   res.redirect("/login");
 });
 
@@ -177,14 +176,14 @@ app.post("/register", (req, res) => {
   }
   // Add the user information to the `users` object using the randomly generated ID as the key
   users[userRandomId] = { email, hashedPassword, id: userRandomId };
-  //set a user_id cookie containing the user's newly generated ID
-  res.cookie("user_id", userRandomId);
+  // Set the user_id property of the session cookie to the newly generated ID
+  req.session.user_id = userRandomId;
   res.redirect("/urls");
 });
 
 
 app.get("/urls/new", (req, res) => {
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   const user = users[userId];
 
   if (!user) {
@@ -192,7 +191,7 @@ app.get("/urls/new", (req, res) => {
   }
   //include this var with user_id so it doesnt throw an error on this route
   const templateVars = {
-    user: users[req.cookies["user_id"]]
+    user: users[req.session["user_id"]]
   };
   res.render("urls_new", templateVars);
 });
@@ -200,7 +199,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   const url = urlDatabase[req.params.id];
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   //check if the user_id cookie exists
   if (!userId) {
     return res.status(401).send("You must be logged in to view this page.");
@@ -216,7 +215,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
-    user: users[req.cookies["user_id"]]  // include user_id on every template
+    user: users[req.session["user_id"]]  // include user_id on every template
   };
   res.render("urls_show", templateVars); // 2nd
 });
@@ -224,7 +223,7 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   const urlId = req.params.id;
   const url = urlDatabase[urlId];
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   // check if the URL exists
   if (!url) {
     return res.status(404).send("Error: URL not found");
@@ -250,7 +249,7 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   const urlId = req.params.id;
   const url = urlDatabase[urlId];
-  const userId = req.cookies.user_id;
+  const userId = req.session.user_id;
   // check if the URL exists
   if (!url) {
     return res.status(404).send("Error: URL not found");
