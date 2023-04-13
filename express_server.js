@@ -200,7 +200,7 @@ app.get("/urls/:id", (req, res) => {
   const url = urlDatabase[req.params.id];
   const userId = req.cookies.user_id;
   //check if the user_id cookie exists
-  if (!req.cookies.user_id) {
+  if (!userId) {
     return res.status(401).send("You must be logged in to view this page.");
   }
   //check if the requested URL exists in the urlDatabase object
@@ -220,7 +220,25 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = {
+  const urlId = req.params.id;
+  const url = urlDatabase[urlId];
+  const userId = req.cookies.user_id;
+  // check if the URL exists
+  if (!url) {
+    return res.status(404).send("Error: URL not found");
+  }
+
+  // check if the user is logged in
+  if (!userId) {
+    return res.status(401).send("Error: You must be logged in to edit URLs");
+  }
+
+  // check if the user owns the URL
+  if (url.userID !== userId) {
+    return res.status(403).send("Error: You do not have permission to edit this URL");
+  }
+
+  urlDatabase[urlId] = {
     longURL: req.body.longURL,
     userID: userId
   };
@@ -228,7 +246,25 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
+  const urlId = req.params.id;
+  const url = urlDatabase[urlId];
+  const userId = req.cookies.user_id;
+  // check if the URL exists
+  if (!url) {
+    return res.status(404).send("Error: URL not found");
+  }
+
+  // check if the user is logged in
+  if (!userId) {
+    return res.status(401).send("Error: You must be logged in to edit URLs");
+  }
+
+  // check if the user owns the URL
+  if (url.userID !== userId) {
+    return res.status(403).send("Error: You do not have permission to edit this URL");
+  }
+
+  delete urlDatabase[urlId];
   res.redirect("/urls");
 });
 //access short url
