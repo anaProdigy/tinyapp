@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
+const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -140,14 +141,14 @@ app.post("/urls", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-
+  const hashedPassword = bcrypt.hashSync(password, 10);
   const user = findUserByEmail(email, users);
   //If a user with that e-mail cannot be found, return a response with a 403 status code.
   if (!user) {
     return res.status(403).send("Email not found");
   }
   //check if passward matches
-  if (user.password !== password) {
+  if (!bcrypt.compareSync(password, user.hashedPassword)) {
     return res.status(403).send("Password is incorrect");
   }
   //set the user_id cookie with the matching user's random ID, then redirect to /urls.
@@ -165,8 +166,9 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   let userRandomId = generateRandomString();
   const { email, password } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10);
   // If email or password are empty strings, send a 400 Bad Request response
-  if (!email || !password) {
+  if (!email || !hashedPassword) {
     return res.status(400).send("Fields cannot be empty");
   }
   // Check if email already exists in the users object
@@ -174,7 +176,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send("This email is taken");
   }
   // Add the user information to the `users` object using the randomly generated ID as the key
-  users[userRandomId] = { email, password, id: userRandomId };
+  users[userRandomId] = { email, hashedPassword, id: userRandomId };
   //set a user_id cookie containing the user's newly generated ID
   res.cookie("user_id", userRandomId);
   res.redirect("/urls");
