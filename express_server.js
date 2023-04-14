@@ -161,7 +161,7 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   // check if email or password are empty strings
-  if (!email || !hashedPassword) {
+  if (!email || !password) {
     return res.status(400).send("Fields cannot be empty");
   }
   // Check if email already exists in the users object
