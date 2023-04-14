@@ -3,9 +3,8 @@ const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 8080;
-const findUserByEmail = require('./helpers');
 const { urlDatabase, users } = require('./data');
-
+const { findUserByEmail, urlsForUser, generateRandomString } = require('./helpers')
 //middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({
@@ -16,27 +15,52 @@ app.set("view engine", "ejs");
 
 
 
+// const urlDatabase = {
+//   b6UTxQ: {
+//     longURL: "https://www.tsn.ca",
+//     userID: "aJ48lW",
+//   },
+//   i3BoGr: {
+//     longURL: "https://www.google.ca",
+//     userID: "aJ48lW",
+//   },
+// };
+
+// const users = {
+//   userRandomID: {
+//     id: "userRandomID",
+//     email: "user@example.com",
+//     password: "purple-monkey-dinosaur",
+//   },
+//   user2RandomID: {
+//     id: "user2RandomID",
+//     email: "user2@example.com",
+//     password: "dishwasher-funk",
+//   },
+// };
+
+
 //functions
-const generateRandomString = function() {
-  let result = '';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charsLength = chars.length;
+// const generateRandomString = function() {
+//   let result = '';
+//   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//   const charsLength = chars.length;
 
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * charsLength));
-  }
-  return result;
-};
+//   for (let i = 0; i < 6; i++) {
+//     result += chars.charAt(Math.floor(Math.random() * charsLength));
+//   }
+//   return result;
+// };
 
-const urlsForUser = function(id) {
-  userUrls = {};
-  for (let shortUrl in urlDatabase) {
-    if (urlDatabase[shortUrl].userID === id) {
-      userUrls[shortUrl] = urlDatabase[shortUrl];
-    }
-  }
-  return userUrls;
-};
+// const urlsForUser = function(id) {
+//   userUrls = {};
+//   for (let shortUrl in urlDatabase) {
+//     if (urlDatabase[shortUrl].userID === id) {
+//       userUrls[shortUrl] = urlDatabase[shortUrl];
+//     }
+//   }
+//   return userUrls;
+// };
 
 //ROUTES
 app.get("/", (req, res) => {
@@ -168,7 +192,8 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-  const url = urlDatabase[req.params.id];
+  const urlId = req.params.id;
+  const url = urlDatabase[urlId];
   const userId = req.session.user_id;
   //check if the user_id cookie exists
   if (!userId) {
