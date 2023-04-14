@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const app = express();
 const PORT = 8080;
 const findUserByEmail = require('./helpers');
+const { urlDatabase, users } = require('./data');
 
 //middleware
 app.use(express.urlencoded({ extended: true }));
@@ -13,30 +14,6 @@ app.use(cookieSession({
 }));
 app.set("view engine", "ejs");
 
-//data
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW",
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "aJ48lW",
-  },
-};
-
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
-  },
-};
 
 
 //functions
