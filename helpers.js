@@ -1,3 +1,4 @@
+const { urlDatabase } = require('./data');
 //Finding a user in the users object from its email
 const findUserByEmail = function (email, users) {
   for (let user in users) {
@@ -28,4 +29,4 @@ const urlsForUser = function(id) {
   }
   return userUrls;
 };
-module.exports = { findUserByEmail, findUserByEmail, generateRandomString} ;
+module.exports = { findUserByEmail, urlsForUser, generateRandomString} ;

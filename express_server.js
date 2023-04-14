@@ -64,7 +64,16 @@ app.set("view engine", "ejs");
 
 //ROUTES
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  const userId = req.session.user_id;
+  const user = users[userId];
+
+  if (user) {
+    return res.redirect("/urls");
+  }
+  const templateVars = {
+    user: false
+  };
+  res.render("login", templateVars);
 });
 
 app.get("/register", (req, res) => {
@@ -151,7 +160,6 @@ app.post("/login", (req, res) => {
 //clears the user_id session and redirects the user back to the /login page
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
-  //res.clearCookie("user_id");?????????????????????
   res.redirect("/login");
 });
 
