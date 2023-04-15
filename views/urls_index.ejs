@@ -33,7 +33,7 @@
         <tbody>
           <% for (let id in urls) { %>
           <tr>
-            <td><a href="#"><%= id %></a></td>
+            <td><a href="/u/<%= id %>"><%= id %></a></td>
             <td><%= urls[id].longURL %></td>
             <td>
               <a href="/urls/<%= id %>">Edit</a>

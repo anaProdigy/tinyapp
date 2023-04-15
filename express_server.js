@@ -250,20 +250,20 @@ app.post("/urls/:id/delete", (req, res) => {
   const userId = req.session.user_id;
 
   sendError(userId, url, res);
-  // check if the URL exists
-  if (!url) {
-    return res.status(404).send("Error: URL not found");
-  }
+  // // check if the URL exists
+  // if (!url) {
+  //   return res.status(404).send("Error: URL not found");
+  // }
 
-  // check if the user is logged in
-  if (!userId) {
-    return res.status(401).send("Error: You must be logged in to edit URLs");
-  }
+  // // check if the user is logged in
+  // if (!userId) {
+  //   return res.status(401).send("Error: You must be logged in to edit URLs");
+  // }
 
-  // check if the user owns the URL
-  if (url.userID !== userId) {
-    return res.status(403).send("Error: You do not have permission to edit this URL");
-  }
+  // // check if the user owns the URL
+  // if (url.userID !== userId) {
+  //   return res.status(403).send("Error: You do not have permission to edit this URL");
+  // }
 
   delete urlDatabase[urlId];
   res.redirect("/urls");
