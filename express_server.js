@@ -198,23 +198,30 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+const sendError = ( userId, url, res, msg) => {
+  //check if the user_id cookie exists
+  if (!userId) {
+    return res.status(401).send("You must be logged in to access this page.");
+  } 
+  //check if the requested URL exists in the urlDatabase object
+  else if (!url) {
+    return res.status(404).send("Error: URL not found");
+  }
+
+  else if (url.userID !== userId) {
+    return res.status(401).send("This URL does not belong to you");
+  }
+
+
+}
 
 app.get("/urls/:id", (req, res) => {
   const urlId = req.params.id;
   const url = urlDatabase[urlId];
   const userId = req.session.user_id;
-  //check if the user_id cookie exists
-  if (!userId) {
-    return res.status(401).send("You must be logged in to view this page.");
-  }
-  //check if the requested URL exists in the urlDatabase object
-  if (!url) {
-    return res.send("Url is not available");
-  }
 
-  if (url.userID !== userId) {
-    return res.send("You don`t have permission to view this URL");
-  }
+  sendError(userId, url, res);
+
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
@@ -227,20 +234,8 @@ app.post("/urls/:id", (req, res) => {
   const urlId = req.params.id;
   const url = urlDatabase[urlId];
   const userId = req.session.user_id;
-  // check if the URL exists
-  if (!url) {
-    return res.status(404).send("Error: URL not found");
-  }
 
-  // check if the user is logged in
-  if (!userId) {
-    return res.status(401).send("Error: You must be logged in to edit URLs");
-  }
-
-  // check if the user owns the URL
-  if (url.userID !== userId) {
-    return res.status(403).send("Error: You do not have permission to edit this URL");
-  }
+  sendError(userId, url, res);
 
   urlDatabase[urlId] = {
     longURL: req.body.longURL,
@@ -253,6 +248,8 @@ app.post("/urls/:id/delete", (req, res) => {
   const urlId = req.params.id;
   const url = urlDatabase[urlId];
   const userId = req.session.user_id;
+
+  sendError(userId, url, res);
   // check if the URL exists
   if (!url) {
     return res.status(404).send("Error: URL not found");
