@@ -9,23 +9,24 @@ const { findUserByEmail, urlsForUser, generateRandomString } = require('./helper
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
-  keys: ["one", "two"]
+  keys: ["one"]
 }));
 app.set("view engine", "ejs");
 
 
 //ROUTES
 app.get("/", (req, res) => {
-  const userId = req.session.user_id;
-  const user = users[userId];
+  res.redirect("/login")
+  // const userId = req.session.user_id;
+  // const user = users[userId];
 
-  if (user) {
-    return res.redirect("/urls");
-  }
-  const templateVars = {
-    user: false
-  };
-  res.render("login", templateVars);
+  // if (user) {
+  //   return res.redirect("/urls");
+  // }
+  // const templateVars = {
+  //   user: false
+  // };
+  // res.render("login", templateVars);
 });
 
 app.get("/register", (req, res) => {
@@ -111,7 +112,7 @@ app.post("/login", (req, res) => {
 
 //clears the user_id session and redirects the user back to the /login page
 app.post("/logout", (req, res) => {
-  req.session.user_id = null;
+  req.session = null;
   res.redirect("/login");
 });
 
