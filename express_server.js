@@ -14,54 +14,6 @@ app.use(cookieSession({
 app.set("view engine", "ejs");
 
 
-
-// const urlDatabase = {
-//   b6UTxQ: {
-//     longURL: "https://www.tsn.ca",
-//     userID: "aJ48lW",
-//   },
-//   i3BoGr: {
-//     longURL: "https://www.google.ca",
-//     userID: "aJ48lW",
-//   },
-// };
-
-// const users = {
-//   userRandomID: {
-//     id: "userRandomID",
-//     email: "user@example.com",
-//     password: "purple-monkey-dinosaur",
-//   },
-//   user2RandomID: {
-//     id: "user2RandomID",
-//     email: "user2@example.com",
-//     password: "dishwasher-funk",
-//   },
-// };
-
-
-//functions
-// const generateRandomString = function() {
-//   let result = '';
-//   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-//   const charsLength = chars.length;
-
-//   for (let i = 0; i < 6; i++) {
-//     result += chars.charAt(Math.floor(Math.random() * charsLength));
-//   }
-//   return result;
-// };
-
-// const urlsForUser = function(id) {
-//   userUrls = {};
-//   for (let shortUrl in urlDatabase) {
-//     if (urlDatabase[shortUrl].userID === id) {
-//       userUrls[shortUrl] = urlDatabase[shortUrl];
-//     }
-//   }
-//   return userUrls;
-// };
-
 //ROUTES
 app.get("/", (req, res) => {
   const userId = req.session.user_id;
@@ -250,20 +202,7 @@ app.post("/urls/:id/delete", (req, res) => {
   const userId = req.session.user_id;
 
   sendError(userId, url, res);
-  // // check if the URL exists
-  // if (!url) {
-  //   return res.status(404).send("Error: URL not found");
-  // }
-
-  // // check if the user is logged in
-  // if (!userId) {
-  //   return res.status(401).send("Error: You must be logged in to edit URLs");
-  // }
-
-  // // check if the user owns the URL
-  // if (url.userID !== userId) {
-  //   return res.status(403).send("Error: You do not have permission to edit this URL");
-  // }
+  
 
   delete urlDatabase[urlId];
   res.redirect("/urls");
