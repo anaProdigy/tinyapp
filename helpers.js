@@ -1,7 +1,7 @@
 const { urlDatabase } = require('./data');
 //Finding a user in the users object from its email
 const findUserByEmail = function (email, users) {
-  for (let user in users) {
+  for (const user in users) {
     if (users[user].email === email) {
       return users[user];
     }
@@ -21,8 +21,8 @@ const generateRandomString = function() {
 };
 
 const urlsForUser = function(id) {
-  userUrls = {};
-  for (let shortUrl in urlDatabase) {
+  const userUrls = {};
+  for (const shortUrl in urlDatabase) {
     if (urlDatabase[shortUrl].userID === id) {
       userUrls[shortUrl] = urlDatabase[shortUrl];
     }

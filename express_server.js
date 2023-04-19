@@ -68,7 +68,7 @@ app.get("/urls", (req, res) => {
   const userUrls = urlsForUser(userId);
   const templateVars = {
     urls: userUrls,
-    user: user
+    user
   }; 
   res.render("urls_index", templateVars);
 });
@@ -81,7 +81,7 @@ app.post("/urls", (req, res) => {
     res.status(401).send("You must be logged in to shorten your URL");
   }
 
-  let newShortId = generateRandomString();
+  const newShortId = generateRandomString();
 
   urlDatabase[newShortId] = {
     longURL: req.body.longURL,
@@ -118,7 +118,7 @@ app.post("/logout", (req, res) => {
 
 //Registration Handler
 app.post("/register", (req, res) => {
-  let userRandomId = generateRandomString();
+  const userRandomId = generateRandomString();
   const { email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   // check if email or password are empty strings
